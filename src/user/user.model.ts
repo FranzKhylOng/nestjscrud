@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import loki from 'lokijs';
 
-const db = new loki('example.db');
+const db = new loki('user.db');
 
 export interface User {
   id: string;
