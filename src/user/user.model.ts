@@ -1,48 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import R from 'ramda';
+import loki from 'lokijs';
 
-export type User = {
+const db = new loki('example.db');
+
+export interface User {
   id: string;
   username: string;
   password: string;
-  age: number;
   address: string;
-};
+  wishlist: string[];
+}
 
-export let users: User[] = [];
+const users = db.addCollection<User>('users');
 
 @Injectable()
 export class UserModel {
-  create(user: User) {
-    console.log(user);
-
-    users = R.append(user)(users);
-
-    console.log(users);
+  create(user) {
+    users.insert(user);
   }
 
-  update(id: string, updates: User) {
-    const user = R.filter((element: User) => {
-      return element.id === id;
-    })(users);
-
-    users[R.findIndex(R.prop(id, 'id'))(users)] = R.head(
-      R.mergeLeft(user, updates),
-    );
-
-    return user;
+  update(id: string, updates: Partial<User>) {
+    const user = users.findOne({ id });
+    if (user) {
+      Object.assign(user, updates);
+      users.update(user);
+      return user;
+    }
+    return null;
   }
 
   retrieve(id: string) {
-    return R.compose(
-      R.head,
-      R.filter((element: User) => {
-        return element.id === id;
-      }),
-    )(users);
+    return users.findOne({ id });
   }
 
   delete(id: string) {
-    users = R.remove(R.findIndex(R.prop(id, 'id'))(users), 1)(users) as User[];
+    const user = users.findOne({ id });
+    if (user) {
+      users.remove(user);
+      return user;
+    }
+    return null;
   }
 }
