@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { Product } from '../product/product.model';
+import { User } from '../user/user.model';
 import loki from 'lokijs';
 
 const db = new loki('order.db');
 
 export interface Order {
   id: string;
-  user: string;
-  product: string;
+  user: User;
+  product: Product;
   quantity: number;
 }
 

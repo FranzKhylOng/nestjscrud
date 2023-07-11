@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Product } from '../product/product.model';
 import loki from 'lokijs';
 
 const db = new loki('user.db');
@@ -8,7 +9,7 @@ export interface User {
   username: string;
   password: string;
   address: string;
-  wishlist: string[];
+  wishlist: Product[];
 }
 
 const users = db.addCollection<User>('users');
