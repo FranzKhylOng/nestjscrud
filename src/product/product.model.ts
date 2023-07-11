@@ -1,43 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import loki from 'lokijs';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-const db = new loki('prouct.db');
-
-export interface Product {
-  id: string;
+@Schema()
+export class Product {
+  @Prop()
   name: string;
+  @Prop()
   quantity: number;
+  @Prop()
   description: string;
 }
 
-const products = db.addCollection<Product>('products');
-
-@Injectable()
-export class ProductModel {
-  create(product) {
-    products.insert(product);
-  }
-
-  update(id: string, updates: Partial<Product>) {
-    const product = products.findOne({ id });
-    if (product) {
-      Object.assign(product, updates);
-      products.update(product);
-      return product;
-    }
-    return null;
-  }
-
-  retrieve(id: string) {
-    return products.findOne({ id });
-  }
-
-  delete(id: string) {
-    const product = products.findOne({ id });
-    if (product) {
-      products.remove(product);
-      return product;
-    }
-    return null;
-  }
-}
+export const ProductSchema = SchemaFactory.createForClass(Product);

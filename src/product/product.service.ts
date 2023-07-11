@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Product, ProductModel } from './product.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Product } from './product.model';
 
 @Injectable()
 export class ProductService {
-  constructor(private readonly product: ProductModel) {}
+  constructor(@InjectModel(Product.name) private model: Model<Product>) {}
 
   create(product: Product) {
-    this.product.create(product);
+    this.model.create(product);
   }
 
   update(id: string, updates: Product) {
-    return this.product.update(id, updates);
+    return this.model.updateOne({ id }, updates);
   }
 
   retrieve(id: string) {
-    return this.product.retrieve(id);
+    return this.model.findOne({ id });
   }
 
   delete(id: string) {
-    this.product.delete(id);
+    this.model.deleteOne({ id });
   }
 }

@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Order, OrderModel } from './order.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Order } from './order.model';
 
 @Injectable()
 export class OrderService {
-  constructor(private readonly order: OrderModel) {}
+  constructor(@InjectModel(Order.name) private model: Model<Order>) {}
 
   create(order: Order) {
-    this.order.create(order);
+    this.model.create(order);
   }
 
   update(id: string, updates: Order) {
-    return this.order.update(id, updates);
+    return this.model.updateOne({ id }, updates);
   }
 
   retrieve(id: string) {
-    return this.order.retrieve(id);
+    return this.model.findOne({ id });
   }
 
   delete(id: string) {
-    this.order.delete(id);
+    this.model.deleteOne({ id });
   }
 }

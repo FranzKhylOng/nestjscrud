@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { User, UserModel } from './user.model';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './user.model';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly user: UserModel) {}
+  constructor(@InjectModel(User.name) private model: Model<User>) {}
 
   create(user: User) {
-    this.user.create(user);
+    this.model.create(user);
   }
 
   update(id: string, updates: User) {
-    return this.user.update(id, updates);
+    return this.model.updateOne({ id }, updates);
   }
 
   retrieve(id: string) {
-    return this.user.retrieve(id);
+    return this.model.findOne({ id });
   }
 
   delete(id: string) {
-    this.user.delete(id);
+    this.model.deleteOne({ id });
   }
 }

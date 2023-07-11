@@ -7,36 +7,30 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import crypto from 'crypto';
-import { UserModel, User } from './user.model';
+import { UserService } from './user.service';
+import { User } from './user.model';
 
 @Controller()
 export class UserController {
-  constructor(private readonly userModel: UserModel) {}
+  constructor(private readonly service: UserService) {}
 
   @Post('/user')
   async create(@Body() body: User) {
-    const newUser = {
-      id: crypto.randomBytes(64).toString('hex'),
-      ...body,
-    };
-
-    this.userModel.create(newUser);
-    console.log('User created:', newUser);
+    return await this.service.create(body);
   }
 
   @Put('/user/:id')
-  async update(@Param('id') id: string, @Body() updates: Partial<User>) {
-    this.userModel.update(id, updates);
+  async update(@Param('id') id: string, @Body() updates: User) {
+    this.service.update(id, updates);
   }
 
   @Get('/user/:id')
   async retrieve(@Param('id') id: string) {
-    return this.userModel.retrieve(id);
+    return this.service.retrieve(id);
   }
 
   @Delete('/user/:id')
   async delete(@Param('id') id: string) {
-    this.userModel.delete(id);
+    this.service.delete(id);
   }
 }

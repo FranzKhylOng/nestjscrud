@@ -7,37 +7,30 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-
-import crypto from 'crypto';
-import { ProductModel, Product } from './product.model';
+import { ProductService } from './product.service';
+import { Product } from './product.model';
 
 @Controller()
 export class ProductController {
-  constructor(private readonly productModel: ProductModel) {}
+  constructor(private readonly service: ProductService) {}
 
   @Post('/product')
   async create(@Body() body: Product) {
-    const newProduct = {
-      id: crypto.randomBytes(64).toString('hex'),
-      ...body,
-    };
-
-    this.productModel.create(newProduct);
-    console.log('Product created:', newProduct);
+    return await this.service.create(body);
   }
 
   @Put('/product/:id')
-  async update(@Param('id') id: string, @Body() updates: Partial<Product>) {
-    this.productModel.update(id, updates);
+  async update(@Param('id') id: string, @Body() updates: Product) {
+    this.service.update(id, updates);
   }
 
   @Get('/product/:id')
   async retrieve(@Param('id') id: string) {
-    return this.productModel.retrieve(id);
+    return this.service.retrieve(id);
   }
 
   @Delete('/product/:id')
   async delete(@Param('id') id: string) {
-    this.productModel.delete(id);
+    this.service.delete(id);
   }
 }

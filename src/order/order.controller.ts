@@ -7,36 +7,30 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import crypto from 'crypto';
-import { OrderModel, Order } from './order.model';
+import { OrderService } from './order.service';
+import { Order } from './order.model';
 
 @Controller()
 export class OrderController {
-  constructor(private readonly orderModel: OrderModel) {}
+  constructor(private readonly service: OrderService) {}
 
   @Post('/order')
   async create(@Body() body: Order) {
-    const newOrder = {
-      id: crypto.randomBytes(64).toString('hex'),
-      ...body,
-    };
-
-    this.orderModel.create(newOrder);
-    console.log('Order created:', newOrder);
+    return await this.service.create(body);
   }
 
   @Put('/order/:id')
-  async update(@Param('id') id: string, @Body() updates: Partial<Order>) {
-    this.orderModel.update(id, updates);
+  async update(@Param('id') id: string, @Body() updates: Order) {
+    this.service.update(id, updates);
   }
 
   @Get('/order/:id')
   async retrieve(@Param('id') id: string) {
-    return this.orderModel.retrieve(id);
+    return this.service.retrieve(id);
   }
 
   @Delete('/order/:id')
   async delete(@Param('id') id: string) {
-    this.orderModel.delete(id);
+    this.service.delete(id);
   }
 }
