@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Product } from 'src/product/product.model';
+import { User } from 'src/user/user.model';
 
 @Schema()
 export class Order {
   @Prop()
-  user: string;
+  user: User;
   @Prop()
-  product: string;
+  product: Product;
   @Prop()
   quantity: number;
 }

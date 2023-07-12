@@ -12,14 +12,14 @@ export class UserService {
   }
 
   update(id: string, updates: User) {
-    return this.model.updateOne({ id }, updates);
+    return this.model.findByIdAndUpdate(id, updates);
   }
 
   retrieve(id: string) {
-    return this.model.findOne({ id });
+    return this.model.findById(id);
   }
 
   delete(id: string) {
-    this.model.deleteOne({ id });
+    this.model.findByIdAndDelete(id);
   }
 }
